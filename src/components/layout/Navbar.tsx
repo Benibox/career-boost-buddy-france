@@ -2,9 +2,23 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+// État temporaire qui simule un utilisateur connecté avec/sans profil
+// À remplacer plus tard par une vraie gestion d'authentification
+const useUserProfile = () => {
+  // Pour l'instant, on retourne un profil non existant
+  // Dans une vraie implémentation, cette valeur viendrait d'un contexte ou d'une API
+  return {
+    profileExists: false,
+    name: "",
+    avatarUrl: ""
+  };
+};
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const userProfile = useUserProfile();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,9 +74,20 @@ const Navbar = () => {
         </nav>
 
         <div className="flex space-x-3">
-          <Button asChild className="bg-highlight hover:bg-darkpurple">
-            <Link to="/creer">Créer mon profil</Link>
-          </Button>
+          {userProfile.profileExists ? (
+            <Link to="/profil">
+              <Avatar className="cursor-pointer transition-transform hover:scale-105">
+                <AvatarImage src={userProfile.avatarUrl} alt="Profil" />
+                <AvatarFallback className="bg-highlight text-white">
+                  {userProfile.name ? userProfile.name.charAt(0) : "U"}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          ) : (
+            <Button asChild className="bg-highlight hover:bg-darkpurple">
+              <Link to="/creer">Créer mon profil</Link>
+            </Button>
+          )}
         </div>
       </div>
     </header>

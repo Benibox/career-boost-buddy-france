@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Parrainage from "./pages/Parrainage";
 import QuiSommesNous from "./pages/QuiSommesNous";
 import CreerProfil from "./pages/CreerProfil";
+import Profil from "./pages/Profil";
 import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
 
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/parrainage" element={<Parrainage />} />
           <Route path="/qui-sommes-nous" element={<QuiSommesNous />} />
           <Route path="/creer" element={<CreerProfil />} />
+          <Route path="/profil" element={<Profil />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
