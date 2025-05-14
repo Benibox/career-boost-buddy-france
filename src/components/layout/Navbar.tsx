@@ -28,9 +28,6 @@ const Navbar = () => {
         </nav>
 
         <div className="flex space-x-3">
-          <Button variant="outline" asChild className="hidden sm:inline-flex">
-            <Link to="/valider">Valider un profil</Link>
-          </Button>
           <Button asChild className="bg-highlight hover:bg-darkpurple">
             <Link to="/creer">Créer mon profil</Link>
           </Button>
