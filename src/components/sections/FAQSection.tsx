@@ -36,7 +36,7 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-gray-50 reveal-on-scroll">
       <div className="container mx-auto px-4">
         <h2 className="section-title">
           Questions <span className="highlight-text">fréquentes</span>

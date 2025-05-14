@@ -19,7 +19,7 @@ const testimonialsData = [
 
 const TestimonialSection = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white reveal-on-scroll">
       <div className="container mx-auto px-4">
         <h2 className="section-title">
           Ils nous font <span className="highlight-text">confiance</span>
@@ -32,8 +32,7 @@ const TestimonialSection = () => {
           {testimonialsData.map((testimonial, index) => (
             <div
               key={index}
-              className="bg-gray-50 p-6 rounded-lg border border-gray-100 animate-fade-in"
-              style={{ animationDelay: `${index * 150}ms` }}
+              className="bg-gray-50 p-6 rounded-lg border border-gray-100 feature-card"
             >
               <p className="italic text-gray-700 mb-4">"{testimonial.quote}"</p>
               <div>

@@ -9,8 +9,33 @@ import Parrainage from "./pages/Parrainage";
 import QuiSommesNous from "./pages/QuiSommesNous";
 import CreerProfil from "./pages/CreerProfil";
 import NotFound from "./pages/NotFound";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
+
+// Component to trigger initial animations
+const ScrollRevealInitializer = () => {
+  useEffect(() => {
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      const firstSection = document.querySelector('.reveal-on-scroll');
+      if (firstSection) {
+        firstSection.classList.add('revealed');
+        
+        // Also reveal first set of feature cards if any
+        const featureCards = firstSection.querySelectorAll('.feature-card');
+        if (featureCards.length > 0) {
+          featureCards.forEach((card, index) => {
+            (card as HTMLElement).style.transitionDelay = `${index * 100}ms`;
+            card.classList.add('revealed');
+          });
+        }
+      }
+    }, 100);
+  }, []);
+  
+  return null;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -18,6 +43,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollRevealInitializer />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/parrainage" element={<Parrainage />} />

@@ -114,3 +114,26 @@
     @apply bg-lightpurple p-4 rounded-full flex items-center justify-center w-16 h-16 mb-4 mx-auto;
   }
 }
+
+/* Scroll reveal animation */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-on-scroll .feature-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms ease-out, transform 600ms ease-out;
+}
+
+.reveal-on-scroll.revealed .feature-card {
+  opacity: 1;
+  transform: translateY(0);
+}

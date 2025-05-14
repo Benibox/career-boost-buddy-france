@@ -9,7 +9,7 @@ interface FeatureCardProps {
 
 const FeatureCard = ({ icon, title, description }: FeatureCardProps) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col items-center text-center h-full animate-fade-in">
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col items-center text-center h-full feature-card">
       <div className="card-icon">
         {icon}
       </div>

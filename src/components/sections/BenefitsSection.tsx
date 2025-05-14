@@ -28,7 +28,7 @@ const BenefitGroup = ({ title, icon, benefits }: BenefitGroupProps) => {
 
 const BenefitsSection = () => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white reveal-on-scroll">
       <div className="container mx-auto px-4">
         <h2 className="section-title">
           Pour qui <span className="highlight-text">CertyLink</span> est-il conçu ?

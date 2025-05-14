@@ -26,7 +26,7 @@ const VerificationSection = () => {
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white reveal-on-scroll">
       <div className="container mx-auto px-4">
         <h2 className="section-title">
           Comment nous <span className="highlight-text">vérifions</span>
@@ -37,7 +37,7 @@ const VerificationSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
           {verificationSteps.map((step, index) => (
-            <div key={index} className="flex flex-col items-center text-center animate-fade-in">
+            <div key={index} className="flex flex-col items-center text-center feature-card">
               <div className="card-icon">
                 {step.icon}
               </div>

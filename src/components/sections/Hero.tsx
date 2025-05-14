@@ -12,7 +12,7 @@ interface HeroProps {
 
 const Hero = ({ title, highlightedText, description, showProfile = false }: HeroProps) => {
   return (
-    <section className="py-12 md:py-24 bg-gray-50">
+    <section className="py-12 md:py-24 bg-gray-50 reveal-on-scroll">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center">
           <div className="w-full md:w-1/2 text-center md:text-left md:pr-8">
@@ -25,9 +25,6 @@ const Hero = ({ title, highlightedText, description, showProfile = false }: Hero
             <div className="space-x-4">
               <Button asChild size="lg" className="bg-highlight hover:bg-darkpurple">
                 <Link to="/creer">Créer mon profil</Link>
-              </Button>
-              <Button variant="outline" asChild size="lg">
-                <Link to="/valider">Valider un profil</Link>
               </Button>
             </div>
           </div>
