@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 
 const formSchema = z.object({
-  role: z.enum(["parrain", "filleul"], {
+  role: z.enum(["Employeur", "Employé"], {
     required_error: "Veuillez sélectionner votre rôle",
   }),
   prenom: z.string().min(2, {
