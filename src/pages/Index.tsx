@@ -12,8 +12,9 @@ const Index = () => {
       <Hero
         title="Faites-vous"
         highlightedText="remarquer"
-        description="Trust my Job permet aux candidats de prouver leur fiabilité grâce à un système de validation simple par des personnes de confiance."
+        description="Prouvez votre fiabilité grâce à des validations de personnes de confiance."
         showProfile={true}
+        showAnchorHint={true}
       />
       <VerificationSection />
       <ProcessSection />
