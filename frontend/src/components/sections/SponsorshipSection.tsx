@@ -8,7 +8,7 @@ const SponsorshipSection = () => {
       icon: <Users className="h-8 w-8 text-highlight" />,
       title: "Identification vérifiée",
       description:
-        "Nous vérifions rigoureusement l'identité des parrains pour éviter toute usurpation d'identité et auto-validation.",
+        "Nous vérifions rigoureusement l'identité des employeurs pour éviter toute usurpation d'identité et auto-validation.",
     },
     {
       icon: <ShieldCheck className="h-8 w-8 text-highlight" />,
@@ -20,7 +20,7 @@ const SponsorshipSection = () => {
       icon: <CheckCircle className="h-8 w-8 text-highlight" />,
       title: "Relation de confiance",
       description:
-        "Seules les personnes ayant réellement travaillé avec le candidat peuvent devenir parrains, créant ainsi un cercle de confiance vérifiable.",
+        "Seules les personnes ayant réellement travaillé avec le candidat peuvent devenir employeurs référents, créant ainsi un cercle de confiance vérifiable.",
     },
   ];
 
