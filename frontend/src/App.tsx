@@ -11,6 +11,7 @@ import CreerProfil from "./pages/CreerProfil";
 import Profil from "./pages/Profil";
 import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
+import Login from "./pages/login";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/qui-sommes-nous" element={<QuiSommesNous />} />
           <Route path="/creer" element={<CreerProfil />} />
           <Route path="/profil" element={<Profil />} />
+          <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
