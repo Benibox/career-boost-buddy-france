@@ -1,4 +1,6 @@
 
+import { Users } from "lucide-react";
+
 const teamMembers = [
   {
     name: "Sophie Martin",
