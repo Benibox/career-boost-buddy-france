@@ -31,7 +31,7 @@ const BenefitsSection = () => {
     <section className="py-16 bg-white reveal-on-scroll">
       <div className="container mx-auto px-4">
         <h2 className="section-title">
-          Pour qui <span className="highlight-text">CertyLink</span> est-il conçu ?
+          Pour qui <span className="highlight-text">Trust my Job</span> est-il conçu ?
         </h2>
         <p className="section-subtitle">
           Notre plateforme apporte de la valeur à chaque personne impliquée dans le

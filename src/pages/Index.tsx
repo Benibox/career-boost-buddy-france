@@ -12,7 +12,7 @@ const Index = () => {
       <Hero
         title="Faites-vous"
         highlightedText="remarquer"
-        description="CertyLink permet aux candidats de prouver leur fiabilité grâce à un système de validation simple par des personnes de confiance."
+        description="Trust my Job permet aux candidats de prouver leur fiabilité grâce à un système de validation simple par des personnes de confiance."
         showProfile={true}
       />
       <VerificationSection />

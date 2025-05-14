@@ -35,7 +35,7 @@ const Navbar = () => {
               scrolled ? "h-6 w-6" : "h-8 w-8"
             }`}
           >
-            C
+            T
           </div>
           <Link 
             to="/" 
@@ -43,7 +43,7 @@ const Navbar = () => {
               scrolled ? "text-base" : "text-lg"
             }`}
           >
-            CertyLink
+            Trust my Job
           </Link>
         </div>
 

@@ -19,9 +19,9 @@ const FAQSection = () => {
         "Vous créez votre profil, puis vous invitez des parrains en leur envoyant un lien unique. Après vérification de leur identité, ils peuvent confirmer votre expérience et ajouter des commentaires personnalisés qui seront visibles par les recruteurs.",
     },
     {
-      question: "Est-ce que CertyLink est gratuit ?",
+      question: "Est-ce que Trust my Job est gratuit ?",
       answer:
-        "Oui, CertyLink est entièrement gratuit pour les candidats et les parrains. Nous proposons également des fonctionnalités avancées pour les employeurs avec des forfaits adaptés à leurs besoins.",
+        "Oui, Trust my Job est entièrement gratuit pour les candidats et les parrains. Nous proposons également des fonctionnalités avancées pour les employeurs avec des forfaits adaptés à leurs besoins.",
     },
     {
       question: "Comment puis-je partager mon profil validé ?",

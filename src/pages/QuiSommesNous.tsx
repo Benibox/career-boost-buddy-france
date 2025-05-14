@@ -11,7 +11,7 @@ const QuiSommesNous = () => {
       <Hero
         title="Qui"
         highlightedText="sommes-nous"
-        description="Découvrez l'équipe derrière CertyLink et notre mission d'aider les candidats à valoriser leurs expériences professionnelles."
+        description="Découvrez l'équipe derrière Trust my Job et notre mission d'aider les candidats à valoriser leurs expériences professionnelles."
       />
       <MissionSection />
       <ValuesSection />
