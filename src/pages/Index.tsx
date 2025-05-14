@@ -1,13 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { User, Search } from "lucide-react";
+import Hero from "@/components/sections/Hero";
+import ProcessSection from "@/components/sections/ProcessSection";
+import TestimonialSection from "@/components/sections/TestimonialSection";
+import Layout from "@/components/layout/Layout";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <Layout>
+      <Hero
+        title="Faites-vous"
+        highlightedText="remarquer"
+        description="CertyLink permet aux candidats de prouver leur fiabilité grâce à un système de validation simple par des personnes de confiance."
+        showProfile={true}
+      />
+      <ProcessSection />
+      <TestimonialSection />
+    </Layout>
   );
 };
 
