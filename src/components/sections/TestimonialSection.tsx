@@ -6,7 +6,7 @@ const testimonialsData = [
     position: "Étudiant",
   },
   {
-    quote: "CertyLink nous fait gagner un temps précieux pour vérifier les profils des candidats. C'est simple et efficace.",
+    quote: "Trust my Job nous fait gagner un temps précieux pour vérifier les profils des candidats. C'est simple et efficace.",
     name: "Sophie L.",
     position: "Responsable RH",
   },
@@ -25,7 +25,7 @@ const TestimonialSection = () => {
           Ils nous font <span className="highlight-text">confiance</span>
         </h2>
         <p className="section-subtitle mb-8">
-          Découvrez ce que nos utilisateurs disent de CertyLink
+          Découvrez ce que nos utilisateurs disent de Trust my Job
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -45,7 +45,7 @@ const TestimonialSection = () => {
 
         <div className="text-center mt-12">
           <button className="bg-highlight hover:bg-darkpurple text-white font-medium py-3 px-8 rounded-md transition-colors">
-            Rejoindre CertyLink
+            Rejoindre Trust my Job
           </button>
         </div>
       </div>

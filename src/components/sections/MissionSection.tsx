@@ -9,7 +9,7 @@ const MissionSection = () => {
         
         <div className="max-w-3xl mx-auto bg-gray-50 p-8 rounded-lg border border-gray-100">
           <p className="text-gray-700 mb-4">
-            CertyLink est né d'un constat simple : les candidats rencontrent des difficultés pour prouver leur fiabilité auprès des employeurs potentiels.
+            Trust my Job est né d'un constat simple : les candidats rencontrent des difficultés pour prouver leur fiabilité auprès des employeurs potentiels.
           </p>
           
           <p className="text-gray-700 mb-4">

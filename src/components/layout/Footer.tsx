@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -9,12 +8,12 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="h-8 w-8 rounded-full bg-highlight flex items-center justify-center text-white font-semibold">
-                C
+                T
               </div>
-              <span className="font-bold text-lg">CertyLink</span>
+              <span className="font-bold text-lg">Trust my Job</span>
             </div>
             <p className="text-sm text-gray-400">
-              Votre passeport emploi en un clic. CertyLink aide les jeunes de 16 à 25 ans à prouver leur fiabilité.
+              Votre passeport emploi en un clic. Trust my Job aide les jeunes de 16 à 25 ans à prouver leur fiabilité.
             </p>
           </div>
           
@@ -49,7 +48,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-gray-800 mt-8 pt-6 text-center text-gray-400 text-sm">
-          <p>© 2025 CertyLink - Tous droits réservés</p>
+          <p>© 2025 Trust my Job - Tous droits réservés</p>
         </div>
       </div>
     </footer>
