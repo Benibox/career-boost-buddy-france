@@ -12,7 +12,7 @@ const Index = () => {
       <Hero
         title="Faites-vous"
         highlightedText="remarquer"
-        description="Prouvez votre fiabilité grâce à des validations de personnes de confiance."
+        description="Prouvez votre fiabilité grâce à la validation de votre précédent employeur."
         showProfile={true}
         showAnchorHint={true}
       />
