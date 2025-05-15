@@ -25,9 +25,7 @@ import {
 } from "@/components/ui/form";
 
 const formSchema = z.object({
-
   role: z.enum(["Employeur", "Employé"], {
-
     required_error: "Veuillez sélectionner votre rôle",
   }),
   prenom: z.string().min(2, {
@@ -92,11 +90,11 @@ const CreerProfil = () => {
                         >
                           <div className="flex items-center gap-2">
                             <RadioGroupItem value="employeur" id="employeur" />
-                            <Label htmlFor="employeur" className="cursor-pointer">Un employeur</Label>
+                            <Label htmlFor="employeur" className="cursor-pointer">Employeur</Label>
                           </div>
                           <div className="flex items-center gap-2">
                             <RadioGroupItem value="employe" id="employe" />
-                            <Label htmlFor="employe" className="cursor-pointer">Un employé</Label>
+                            <Label htmlFor="employe" className="cursor-pointer">Employé</Label>
                           </div>
                         </RadioGroup>
                       </FormControl>
