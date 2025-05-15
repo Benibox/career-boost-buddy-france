@@ -1,4 +1,4 @@
-
+// frontend/src/pages/CreerProfil.tsx
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -6,6 +6,7 @@ import * as z from "zod";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Calendar as CalendarIcon, User, Lock, Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -46,20 +47,28 @@ const formSchema = z.object({
 });
 
 const CreerProfil = () => {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       role: undefined,
       prenom: "",
       nom: "",
+      dateNaissance: undefined,
       email: "",
       password: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    // Traitement du formulaire à implémenter
+    // TODO : remplacer par appel réel à votre API d'inscription
+    // ex : const res = await api.post('/api/auth/signup', values);
+    // if (res.ok) { ... }
+
+    // 1. Stocke le prénom
+    localStorage.setItem("userFirstName", values.prenom);
+    // 2. Redirige vers l'onboarding
+    navigate("/welcome");
   };
 
   return (
@@ -71,39 +80,39 @@ const CreerProfil = () => {
         <p className="text-lg text-gray-600 max-w-2xl mx-auto text-center mb-10">
           En quelques minutes seulement, créez votre profil et commencez votre parcours
         </p>
-        
+
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-8">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-lg font-medium">Je suis</h2>
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col sm:flex-row sm:gap-6 gap-2"
-                        >
-                          <div className="flex items-center gap-2">
-                            <RadioGroupItem value="employeur" id="employeur" />
-                            <Label htmlFor="employeur" className="cursor-pointer">Employeur</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <RadioGroupItem value="employe" id="employe" />
-                            <Label htmlFor="employe" className="cursor-pointer">Employé</Label>
-                          </div>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              {/* Rôle */}
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Je suis</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        className="flex gap-4"
+                      >
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="Employeur" id="employeur" />
+                          <Label htmlFor="employeur">Employeur</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <RadioGroupItem value="Employé" id="employe" />
+                          <Label htmlFor="employe">Employé</Label>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
+              {/* Prénom / Nom */}
               <div className="grid md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -114,14 +123,13 @@ const CreerProfil = () => {
                       <FormControl>
                         <div className="relative">
                           <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
-                          <Input className="pl-10" placeholder="Entrez votre prénom" {...field} />
+                          <Input {...field} className="pl-10" placeholder="Prénom" />
                         </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
                   name="nom"
@@ -131,7 +139,7 @@ const CreerProfil = () => {
                       <FormControl>
                         <div className="relative">
                           <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
-                          <Input className="pl-10" placeholder="Entrez votre nom" {...field} />
+                          <Input {...field} className="pl-10" placeholder="Nom" />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -140,11 +148,12 @@ const CreerProfil = () => {
                 />
               </div>
 
+              {/* Date de naissance */}
               <FormField
                 control={form.control}
                 name="dateNaissance"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
+                  <FormItem>
                     <FormLabel>Date de naissance</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -152,25 +161,19 @@ const CreerProfil = () => {
                           <Button
                             variant="outline"
                             className={cn(
-                              "w-full pl-3 text-left font-normal flex justify-between",
+                              "w-full text-left flex justify-between",
                               !field.value && "text-muted-foreground"
                             )}
                           >
-                            <div className="flex items-center">
-                              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
-                              {field.value ? (
-                                format(field.value, "dd MMMM yyyy", { locale: fr })
-                              ) : (
-                                "Sélectionnez une date"
-                              )}
-                            </div>
+                            {field.value
+                              ? format(field.value, "dd MMMM yyyy", { locale: fr })
+                              : "Sélectionner une date"}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
+                      <PopoverContent align="start" className="p-0 w-auto">
                         <Calendar
                           mode="single"
-                          captionLayout="dropdown-buttons"
                           selected={field.value}
                           onSelect={field.onChange}
                           fromYear={1940}
@@ -187,6 +190,7 @@ const CreerProfil = () => {
                 )}
               />
 
+              {/* Email */}
               <FormField
                 control={form.control}
                 name="email"
@@ -196,7 +200,7 @@ const CreerProfil = () => {
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
-                        <Input className="pl-10" placeholder="vous@exemple.com" {...field} />
+                        <Input {...field} className="pl-10" placeholder="vous@exemple.com" />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -204,6 +208,7 @@ const CreerProfil = () => {
                 )}
               />
 
+              {/* Mot de passe */}
               <FormField
                 control={form.control}
                 name="password"
@@ -213,11 +218,11 @@ const CreerProfil = () => {
                     <FormControl>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
-                        <Input 
-                          className="pl-10" 
-                          placeholder="********" 
-                          type="password" 
-                          {...field} 
+                        <Input
+                          {...field}
+                          className="pl-10"
+                          type="password"
+                          placeholder="********"
                         />
                       </div>
                     </FormControl>
@@ -226,10 +231,7 @@ const CreerProfil = () => {
                 )}
               />
 
-              <Button 
-                type="submit" 
-                className="w-full bg-highlight hover:bg-darkpurple"
-              >
+              <Button type="submit" className="w-full bg-highlight hover:bg-darkpurple">
                 Créer mon profil
               </Button>
             </form>

@@ -1,43 +1,23 @@
-
+// frontend/src/App.tsx
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Index from "./pages/Index";
 import Parrainage from "./pages/Parrainage";
 import QuiSommesNous from "./pages/QuiSommesNous";
 import CreerProfil from "./pages/CreerProfil";
+import Login from "./pages/login";
+import Onboarding from "./pages/Onboarding";
+import AddExperience from "./pages/AddExperience";
 import Profil from "./pages/Profil";
 import NotFound from "./pages/NotFound";
-import { useEffect } from "react";
-import Login from "./pages/login";
+
+import PrivateRoute from "@/components/PrivateRoute";
 
 const queryClient = new QueryClient();
-
-// Component to trigger initial animations
-const ScrollRevealInitializer = () => {
-  useEffect(() => {
-    // Small delay to ensure DOM is ready
-    setTimeout(() => {
-      const firstSection = document.querySelector('.reveal-on-scroll');
-      if (firstSection) {
-        firstSection.classList.add('revealed');
-        
-        // Also reveal first set of feature cards if any
-        const featureCards = firstSection.querySelectorAll('.feature-card');
-        if (featureCards.length > 0) {
-          featureCards.forEach((card, index) => {
-            (card as HTMLElement).style.transitionDelay = `${index * 100}ms`;
-            card.classList.add('revealed');
-          });
-        }
-      }
-    }, 100);
-  }, []);
-  
-  return null;
-}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -45,14 +25,31 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <ScrollRevealInitializer />
         <Routes>
+          {/* pages publiques */}
           <Route path="/" element={<Index />} />
           <Route path="/parrainage" element={<Parrainage />} />
           <Route path="/qui-sommes-nous" element={<QuiSommesNous />} />
           <Route path="/creer" element={<CreerProfil />} />
-          <Route path="/profil" element={<Profil />} />
           <Route path="/login" element={<Login />} />
+
+          {/* onboarding après création de compte */}
+          <Route path="/welcome" element={<Onboarding />} />
+
+          {/* ajout d'une expérience (candidat connecté) */}
+          <Route
+            path="/experiences/new"
+            element={
+              <PrivateRoute>
+                <AddExperience />
+              </PrivateRoute>
+            }
+          />
+
+          {/* profil utilisateur (à protéger plus tard) */}
+          <Route path="/profil" element={<Profil />} />
+
+          {/* fallback 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
