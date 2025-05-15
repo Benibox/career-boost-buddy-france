@@ -1,8 +1,10 @@
+// frontend/src/pages/login.tsx
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Mail, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -29,10 +31,8 @@ const formSchema = z.object({
   }),
 });
 
-// ------------------------------------------------------------
-// Component
-// ------------------------------------------------------------
 const Login = () => {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,24 +49,26 @@ const Login = () => {
     setError(null);
 
     try {
-      const res = await fetch(process.env.URLFRONTEND, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // ← on utilise le cookie httpOnly
+          body: JSON.stringify(values),
+        }
+      );
 
       if (!res.ok) {
         const body = await res.json();
         throw new Error(body.message || "Échec de la connexion");
       }
 
-      const { token } = await res.json();
-      // Stocke le token (localStorage, cookie, Zustand, etc.)
-      localStorage.setItem("authToken", token);
-      // Redirige vers le tableau de bord ou une page protégée
-      window.location.href = "/dashboard";
+      // La réponse ne renvoie plus de token en JSON
+      // Le JWT est stocké en cookie httpOnly par le back
+      navigate("/welcome");
     } catch (err: any) {
       setError(err.message);
     } finally {

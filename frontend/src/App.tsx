@@ -15,6 +15,10 @@ import AddExperience from "./pages/AddExperience";
 import Profil from "./pages/Profil";
 import NotFound from "./pages/NotFound";
 
+// Nouveaux imports
+import { AuthProvider } from "./contexts/AuthContext";
+import PrivateRoute from "./contexts/PrivateRoute";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -22,28 +26,45 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* pages publiques */}
-          <Route path="/" element={<Index />} />
-          <Route path="/parrainage" element={<Parrainage />} />
-          <Route path="/qui-sommes-nous" element={<QuiSommesNous />} />
-          <Route path="/creer" element={<CreerProfil />} />
-          <Route path="/login" element={<Login />} />
+      {/* AuthProvider entoure tout pour que le contexte soit disponible */}
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* pages publiques */}
+            <Route path="/" element={<Index />} />
+            <Route path="/parrainage" element={<Parrainage />} />
+            <Route path="/qui-sommes-nous" element={<QuiSommesNous />} />
+            <Route path="/creer" element={<CreerProfil />} />
+            <Route path="/login" element={<Login />} />
 
-          {/* onboarding après création de compte */}
-          <Route path="/welcome" element={<Onboarding />} />
+            {/* onboarding (accessible après inscription) */}
+            <Route path="/welcome" element={<Onboarding />} />
 
-          {/* ajout d'une expérience */}
-          <Route path="/experiences/new" element={<AddExperience />} />
+            {/* ajout d'une expérience (protégé) */}
+            <Route
+              path="/experiences/new"
+              element={
+                <PrivateRoute>
+                  <AddExperience />
+                </PrivateRoute>
+              }
+            />
 
-          {/* profil utilisateur */}
-          <Route path="/profil" element={<Profil />} />
+            {/* profil utilisateur (protégé) */}
+            <Route
+              path="/profil"
+              element={
+                <PrivateRoute>
+                  <Profil />
+                </PrivateRoute>
+              }
+            />
 
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+            {/* fallback 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
