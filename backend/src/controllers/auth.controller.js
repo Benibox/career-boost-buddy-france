@@ -1,20 +1,14 @@
-// backend/src/controllers/auth.controller.js
 import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import { User } from '../models/user.model.js';
 
-// Vérifie que le secret est bien lu !
-console.log("JWT_SECRET =", process.env.JWT_SECRET);
-
-const JWT_SECRET = process.env.JWT_SECRET;
+const { JWT_SECRET } = process.env;
 const COOKIE_NAME = 'authToken';
 
-// Génère un JWT
+if (!JWT_SECRET) throw new Error('JWT_SECRET non défini');
+
 const signToken = (userId) =>
   jwt.sign({ sub: userId }, JWT_SECRET, { expiresIn: '7d' });
-
-// ... (reste du fichier inchangé)
-
 
 export const register = async (req, res) => {
   const errors = validationResult(req);
@@ -51,24 +45,19 @@ export const login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
+      maxAge: 7 * 24 * 60 * 60 * 1000
     })
-    .status(200)
     .json({ message: 'Connecté avec succès' });
 };
 
-// Déconnexion : supprime le cookie
 export const logout = (req, res) => {
   res
     .clearCookie(COOKIE_NAME, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'strict'
     })
     .json({ message: 'Déconnecté avec succès' });
 };
 
-// Vérification de session : route protégée par ensureAuth
-export const checkSession = (req, res) => {
-  res.sendStatus(200);
-};
+export const checkSession = (_req, res) => res.sendStatus(200);

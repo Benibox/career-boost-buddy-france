@@ -1,5 +1,4 @@
-// frontend/src/pages/login.tsx
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -9,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Form,
   FormField,
@@ -18,27 +16,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { AuthContext } from "@/contexts/AuthContext";
 
-// ------------------------------------------------------------
-// Zod schema & types
-// ------------------------------------------------------------
 const formSchema = z.object({
-  email: z
-    .string()
-    .email({ message: "Veuillez entrer une adresse email valide" }),
-  password: z.string().min(8, {
-    message: "Le mot de passe doit contenir au moins 8 caractères",
-  }),
+  email: z.string().email({ message: "Veuillez entrer une adresse email valide" }),
+  password: z.string().min(8, { message: "Le mot de passe doit contenir au moins 8 caractères" }),
 });
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -47,27 +38,8 @@ const Login = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setSubmitting(true);
     setError(null);
-
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // ← on utilise le cookie httpOnly
-          body: JSON.stringify(values),
-        }
-      );
-
-      if (!res.ok) {
-        const body = await res.json();
-        throw new Error(body.message || "Échec de la connexion");
-      }
-
-      // La réponse ne renvoie plus de token en JSON
-      // Le JWT est stocké en cookie httpOnly par le back
+      await login(values.email, values.password);
       navigate("/welcome");
     } catch (err: any) {
       setError(err.message);
@@ -98,11 +70,7 @@ const Login = () => {
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
-                        <Input
-                          className="pl-10"
-                          placeholder="vous@exemple.com"
-                          {...field}
-                        />
+                        <Input className="pl-10" placeholder="vous@exemple.com" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -119,12 +87,7 @@ const Login = () => {
                     <FormControl>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 h-4 w-4" />
-                        <Input
-                          className="pl-10"
-                          placeholder="********"
-                          type="password"
-                          {...field}
-                        />
+                        <Input className="pl-10" placeholder="********" type="password" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -132,15 +95,9 @@ const Login = () => {
                 )}
               />
 
-              {error && (
-                <p className="text-sm text-red-600 text-center">{error}</p>
-              )}
+              {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
-              <Button
-                type="submit"
-                className="w-full bg-highlight hover:bg-darkpurple"
-                disabled={submitting}
-              >
+              <Button type="submit" className="w-full bg-highlight hover:bg-darkpurple" disabled={submitting}>
                 {submitting ? "Connexion…" : "Se connecter"}
               </Button>
             </form>

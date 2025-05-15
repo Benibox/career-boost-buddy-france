@@ -1,24 +1,26 @@
-// index.js
-import dotenv from 'dotenv';
-dotenv.config();
+// Charge immédiatement les variables d’environnement (.env)
+// ───────────────────────────────────────────────────────────
+import 'dotenv/config';
 
 import { connectDB } from './src/config/db.js';
 import app from './src/app.js';
 
-// Définit le port (fallback à 4000)
+// Vérifie la présence de la clé secrète
+if (!process.env.JWT_SECRET) {
+  console.error('❌ JWT_SECRET manquant dans .env');
+  process.exit(1);
+}
+
 const PORT = process.env.PORT || 4000;
 
-// Affiche la chaîne de connexion pour s'assurer qu'elle est bien lue
 console.log('➡️ MONGODB_URI =', process.env.MONGODB_URI);
 
 try {
-  // 1) Connexion à MongoDB
   await connectDB();
   console.log('✅ MongoDB connecté');
 
-  // 2) Démarrage du serveur
   app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
   });
 } catch (err) {
   console.error('❌ MongoDB connection failed:', err.message);

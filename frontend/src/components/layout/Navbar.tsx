@@ -1,23 +1,17 @@
-import { NavLink } from "react-router-dom";
+// frontend/src/components/layout/Navbar.tsx
+import { useContext, useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AuthContext } from "@/contexts/AuthContext";
 
-/* ------------------------------------------------
- * Remplacer ce hook par votre logique d’auth plus tard
- * ------------------------------------------------ */
-const useUserProfile = () => {
-  return {
-    isAuthenticated: false,
-    profileExists: false,
-    name: "",
-    avatarUrl: "",
-  };
-};
+const DEFAULT_AVATAR_URL = "";
+const DEFAULT_NAME = "U";
 
 const Navbar = () => {
+  const { isAuthenticated, logout } = useContext(AuthContext);
   const [scrolled, setScrolled] = useState(false);
-  const userProfile = useUserProfile();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 100);
@@ -25,11 +19,15 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // fonction de classe réutilisable pour les NavLink
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `transition-all ${
       isActive
-        ? "text-highlight font-semibold"   // actif : souligné en violet
+        ? "text-highlight font-semibold"
         : "text-gray-700 hover:text-highlight"
     }`;
 
@@ -49,7 +47,14 @@ const Navbar = () => {
           >
             T
           </div>
-          <NavLink to="/" className={({ isActive }) => (isActive ? "text-highlight text-lg font-bold" : "text-lg font-bold text-gray-900")}>
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive
+                ? "text-highlight text-lg font-bold"
+                : "text-lg font-bold text-gray-900"
+            }
+          >
             Trust&nbsp;my&nbsp;Job
           </NavLink>
         </div>
@@ -67,17 +72,26 @@ const Navbar = () => {
           </NavLink>
         </nav>
 
-        {/* Actions profil / auth */}
+        {/* Actions */}
         <div className="flex space-x-3">
-          {userProfile.isAuthenticated ? (
-            <NavLink to="/profil">
-              <Avatar className="cursor-pointer transition-transform hover:scale-105">
-                <AvatarImage src={userProfile.avatarUrl} alt="Profil" />
-                <AvatarFallback className="bg-highlight text-white">
-                  {userProfile.name ? userProfile.name.charAt(0) : "U"}
-                </AvatarFallback>
-              </Avatar>
-            </NavLink>
+          {isAuthenticated ? (
+            <>
+              <NavLink to="/profil">
+                <Avatar className="cursor-pointer transition-transform hover:scale-105">
+                  <AvatarImage src={DEFAULT_AVATAR_URL} alt="Profil" />
+                  <AvatarFallback className="bg-highlight text-white">
+                    {DEFAULT_NAME.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+              </NavLink>
+              <Button
+                variant="outline"
+                className="border-red-500 text-red-500 hover:bg-red-500/10"
+                onClick={handleLogout}
+              >
+                Se&nbsp;déconnecter
+              </Button>
+            </>
           ) : (
             <>
               <Button

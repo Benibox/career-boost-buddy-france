@@ -1,11 +1,21 @@
 import jwt from 'jsonwebtoken';
 
+const COOKIE_NAME = 'authToken';
+
 export const requireAuth = (req, res, next) => {
+  let token = null;
+
+  // 1) Authorization: Bearer <jwt>
   const header = req.headers.authorization;
-  if (!header?.startsWith('Bearer ')) return res.sendStatus(401);
+  if (header?.startsWith('Bearer ')) token = header.split(' ')[1];
+
+  // 2) Cookie httpOnly
+  if (!token && req.cookies?.[COOKIE_NAME]) token = req.cookies[COOKIE_NAME];
+
+  if (!token) return res.sendStatus(401);
 
   try {
-    const payload = jwt.verify(header.split(' ')[1], process.env.JWT_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = payload.sub;
     next();
   } catch {
