@@ -49,7 +49,7 @@ const Login = () => {
     setError(null);
 
     try {
-      const res = await fetch("http://localhost:4001/api/auth/login", {
+      const res = await fetch(process.env.URLFRONTEND, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

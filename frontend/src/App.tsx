@@ -15,8 +15,6 @@ import AddExperience from "./pages/AddExperience";
 import Profil from "./pages/Profil";
 import NotFound from "./pages/NotFound";
 
-import PrivateRoute from "@/components/PrivateRoute";
-
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -36,20 +34,13 @@ const App = () => (
           {/* onboarding après création de compte */}
           <Route path="/welcome" element={<Onboarding />} />
 
-          {/* ajout d'une expérience (candidat connecté) */}
-          <Route
-            path="/experiences/new"
-            element={
-              <PrivateRoute>
-                <AddExperience />
-              </PrivateRoute>
-            }
-          />
+          {/* ajout d'une expérience */}
+          <Route path="/experiences/new" element={<AddExperience />} />
 
-          {/* profil utilisateur (à protéger plus tard) */}
+          {/* profil utilisateur */}
           <Route path="/profil" element={<Profil />} />
 
-          {/* fallback 404 */}
+          {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
