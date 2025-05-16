@@ -1,21 +1,18 @@
-
-import Hero from "@/components/sections/Hero";
-import MissionSection from "@/components/sections/MissionSection";
-import ValuesSection from "@/components/sections/ValuesSection";
-import TeamSection from "@/components/sections/TeamSection";
-import Layout from "@/components/layout/Layout";
+import Layout from "../components/layout/Layout";
+import AboutHero from "../components/sections/AboutHero";
+import MissionSection from "../components/sections/MissionSection";
+import TeamSection from "../components/sections/TeamSection";
+import ValuesSection from "../components/sections/ValuesSection";
+import FAQSection from "../components/sections/FAQSection";
 
 const QuiSommesNous = () => {
   return (
     <Layout>
-      <Hero
-        title="Qui"
-        highlightedText="sommes-nous"
-        description="Découvrez l'équipe derrière Trust my Job et notre mission d'aider les candidats à valoriser leurs expériences professionnelles."
-      />
+      <AboutHero />
       <MissionSection />
       <ValuesSection />
       <TeamSection />
+      <FAQSection />
     </Layout>
   );
 };
