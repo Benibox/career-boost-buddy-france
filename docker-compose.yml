@@ -1,0 +1,42 @@
+services:
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./backend             # pas besoin de target
+    environment:
+      NODE_ENV: development
+      MONGO_URI: mongodb://mongo:27017/benibox
+      JWT_SECRET: change_this
+      PORT: 3001
+    volumes:
+      - ./backend:/app
+      - /app/node_modules         # empêche node_modules host⇆container
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+    command: npm run dev          # nodemon inside container
+
+  frontend:
+    build:
+      context: ./frontend
+      target: build               # ré-utilise l’étape build du Dockerfile
+    environment:
+      VITE_BACKEND_URL: http://localhost:3001
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    # lance vite sur 0.0.0.0:5173 pour que l’hôte y accède
+    command: ["npm","run","dev","--","--host","0.0.0.0","--port","5173"]
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
