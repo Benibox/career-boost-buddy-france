@@ -1,15 +1,30 @@
-// frontend/src/contexts/AuthContext.tsx
-import React, { createContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from 'react';
+import axios from 'axios';
 
-interface AuthContextType {
+export interface UserInfo {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: 'user' | 'admin';
+}
+
+interface AuthCtx {
+  user: UserInfo | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (e: string, p: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-// Crée le contexte (PAS default)
-export const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthCtx>({
+  user: null,
   isAuthenticated: false,
   loading: true,
   login: async () => {},
@@ -17,52 +32,51 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setAuth] = useState(false);
+  const [user, setUser] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Vérifie la session via /api/auth/check au mount
+  /* check session */
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, {
-      credentials: "include",
-    })
-      .then((r) => {
-        // Ajoute un log pour debug
-        // console.log("[AuthContext] /check status", r.status);
-        if (r.ok) setAuth(true);
-        else setAuth(false);
+    axios
+      .get<UserInfo>(`${import.meta.env.VITE_BACKEND_URL}/api/auth/check`, {
+        withCredentials: true,
       })
-      .catch(() => setAuth(false))
+      .then((r) => setUser(r.data))
+      .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await fetch(
+    const res = await axios.post<UserInfo>(
       `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
-      }
+      { email, password },
+      { withCredentials: true },
     );
-    if (!res.ok) throw new Error("Échec de la connexion");
-    setAuth(true);
+    setUser(res.data);
   };
 
   const logout = async () => {
-    await fetch(
+    await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`,
-      {
-        method: "POST",
-        credentials: "include",
-      }
+      {},
+      { withCredentials: true },
     );
-    setAuth(false);
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        loading,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
+
+export const useAuth = () => useContext(AuthContext);

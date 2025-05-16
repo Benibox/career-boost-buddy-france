@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 const COOKIE_NAME = 'authToken';
 
+/* Auth obligatoire ------------------------------------------------ */
 export const requireAuth = (req, res, next) => {
   let token = null;
 
@@ -16,9 +17,15 @@ export const requireAuth = (req, res, next) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = payload.sub;
+    req.user = { id: payload.sub, role: payload.role }; // contient aussi role
     next();
   } catch {
     res.sendStatus(401);
   }
+};
+
+/* Admin seulement ------------------------------------------------- */
+export const requireAdmin = (req, res, next) => {
+  if (req.user?.role === 'admin') return next();
+  res.sendStatus(403);
 };

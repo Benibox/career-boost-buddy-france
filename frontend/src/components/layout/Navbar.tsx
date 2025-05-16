@@ -1,48 +1,50 @@
-// frontend/src/components/layout/Navbar.tsx
-import { useContext, useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AuthContext } from "@/contexts/AuthContext";
+import { useContext, useEffect, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/components/ui/avatar';
+import { AuthContext } from '@/contexts/AuthContext';
 
-const DEFAULT_AVATAR_URL = "";
-const DEFAULT_NAME = "U";
+const DEFAULT_AVATAR_URL = '';
 
 const Navbar = () => {
-  const { isAuthenticated, logout } = useContext(AuthContext);
+  const { user, isAuthenticated, logout } = useContext(AuthContext);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 100);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate('/login');
   };
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `transition-all ${
       isActive
-        ? "text-highlight font-semibold"
-        : "text-gray-700 hover:text-highlight"
+        ? 'text-highlight font-semibold'
+        : 'text-gray-700 hover:text-highlight'
     }`;
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
-        scrolled ? "h-14 bg-white/90 dark:bg-gray-900/90" : "h-20 bg-transparent"
+        scrolled ? 'h-14 bg-white/90 dark:bg-gray-900/90' : 'h-20 bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4 h-full flex justify-between items-center">
-        {/* Logo */}
+        {/* Logo --------------------------------------------------- */}
         <div className="flex items-center gap-2">
           <div
             className={`rounded-full bg-highlight text-white font-semibold flex items-center justify-center transition-all ${
-              scrolled ? "h-6 w-6" : "h-8 w-8"
+              scrolled ? 'h-6 w-6' : 'h-8 w-8'
             }`}
           >
             T
@@ -51,15 +53,15 @@ const Navbar = () => {
             to="/"
             className={({ isActive }) =>
               isActive
-                ? "text-highlight text-lg font-bold"
-                : "text-lg font-bold text-gray-900"
+                ? 'text-highlight text-lg font-bold'
+                : 'text-lg font-bold text-gray-900'
             }
           >
             Trust&nbsp;my&nbsp;Job
           </NavLink>
         </div>
 
-        {/* Menu desktop */}
+        {/* Menu desktop ------------------------------------------ */}
         <nav className="hidden md:flex space-x-8">
           <NavLink to="/" className={linkClass}>
             Accueil
@@ -70,9 +72,16 @@ const Navbar = () => {
           <NavLink to="/qui-sommes-nous" className={linkClass}>
             Qui&nbsp;sommes-nous
           </NavLink>
+
+          {/* Lien admin si rôle === admin ----------------------- */}
+          {user?.role === 'admin' && (
+            <NavLink to="/admin/users" className={linkClass}>
+              Admin
+            </NavLink>
+          )}
         </nav>
 
-        {/* Actions */}
+        {/* Actions ---------------------------------------------- */}
         <div className="flex space-x-3">
           {isAuthenticated ? (
             <>
@@ -80,7 +89,9 @@ const Navbar = () => {
                 <Avatar className="cursor-pointer transition-transform hover:scale-105">
                   <AvatarImage src={DEFAULT_AVATAR_URL} alt="Profil" />
                   <AvatarFallback className="bg-highlight text-white">
-                    {DEFAULT_NAME.charAt(0)}
+                    {user?.firstName
+                      ? user.firstName.charAt(0).toUpperCase()
+                      : 'U'}
                   </AvatarFallback>
                 </Avatar>
               </NavLink>
