@@ -1,17 +1,16 @@
-# backend/Dockerfile  (dev-friendly)
-
+# backend/Dockerfile  (image unique pour backend + seed)
 FROM node:20-alpine
 WORKDIR /app
 
-# installe **toutes** les dépendances (prod + dev)
+# 1. dépendances
 COPY package*.json ./
-RUN npm ci          # ❌ pas de --omit=dev
+RUN npm ci          # installe prod + dev
 
-# copie le code
+# 2. tout le code (inutile de copier seed.js séparément)
 COPY . .
 
 ENV PORT=3001
 EXPOSE 3001
 
-# lance le mode dev (nodemon doit exister)
+# 3. image servant par défaut le backend
 CMD ["npm","run","dev"]

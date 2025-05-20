@@ -4,13 +4,22 @@ import cookieParser from 'cookie-parser';
 import { authRouter }  from './routes/auth.routes.js';
 import userRouter      from './routes/user.routes.js';
 
-const app = express();
+/* ─────────────  LOG HTTP (optionnel) ─────────────
+   Si le paquet morgan est présent, on l’utilise.
+   Sinon on continue sans interrompre l’app.
+--------------------------------------------------- */
+let httpLogger = (_req, _res, next) => next();      // no-op par défaut
+try {
+  const { default: morgan } = await import('morgan');
+  httpLogger = morgan('dev');
+} catch {
+  console.warn('ℹ️  morgan non installé : logs HTTP réduits');
+}
 
-/* ─────────────  CORS  ─────────────
-   Autorise localhost:5173, localhost:8081
-   et l’IP interne utilisée dans ton réseau.
-   Ajoute/retire des domaines si besoin.
-*/
+const app = express();
+app.use(httpLogger);
+
+/* ───────────────  CORS ─────────────── */
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:8081',
@@ -21,17 +30,26 @@ const allowedOrigins = [
 app.use(
   cors({
     origin(origin, cb) {
-      // autorise aussi les requêtes sans origin (ex. curl, tests)
       if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-      return cb(new Error('Origin not allowed by CORS'));
+      return cb(new Error(`Origin ${origin} not allowed by CORS`));
     },
     credentials: true,
   })
 );
 
+/* ───────────  MIDDLEWARE  ─────────── */
 app.use(cookieParser());
 app.use(express.json());
 
+/* Trace le JSON reçu (debug) */
+app.use((req, _res, next) => {
+  if (Object.keys(req.body || {}).length) {
+    console.debug('📦  Body:', req.method, req.originalUrl, req.body);
+  }
+  next();
+});
+
+/* ───────────────  ROUTES  ─────────────── */
 app.use('/api/auth',  authRouter);
 app.use('/api/users', userRouter);
 
