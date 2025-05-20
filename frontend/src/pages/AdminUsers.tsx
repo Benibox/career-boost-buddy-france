@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,   // ← nécessaire
+} from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { User } from '@/contexts/AuthContext';
 import Layout from '@/components/layout/Layout';
@@ -14,28 +18,30 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+/* ----------- types ----------- */
 type NewUser = {
   firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role: 'candidate' | 'employer' | 'admin';
+  lastName:  string;
+  email:     string;
+  password:  string;
+  role:      'candidate' | 'employer' | 'admin';
 };
 
 export default function AdminUsers() {
-  const qc = useQueryClient();
+  /* ----------- init ----------- */
+  const qc   = useQueryClient();
   const BASE = import.meta.env.VITE_BACKEND_URL || '';
 
-  /* ---------- fetch ---------- */
+  /* ----------- fetch ----------- */
   const { data: users = [], isLoading } = useQuery<User[]>({
     queryKey: ['users'],
-    queryFn: async () => {
-      const res = await fetch(`${BASE}/api/users`, { credentials: 'include' });
-      return res.ok ? res.json() : [];
-    },
+    queryFn : () =>
+      fetch(`${BASE}/api/users`, { credentials: 'include' }).then((r) =>
+        r.ok ? r.json() : []
+      ),
   });
 
-  /* ---------- création ---------- */
+  /* ----------- création ----------- */
   const {
     register,
     handleSubmit,
@@ -59,8 +65,8 @@ export default function AdminUsers() {
     },
   });
 
-  /* ---------- update ---------- */
-  const [editId, setEditId] = useState<string | null>(null);
+  /* ----------- édition ----------- */
+  const [editId,    setEditId]    = useState<string | null>(null);
   const [editValue, setEditValue] = useState<Partial<User>>({});
 
   const updateMut = useMutation({
@@ -79,7 +85,7 @@ export default function AdminUsers() {
     },
   });
 
-  /* ---------- suppression ---------- */
+  /* ----------- suppression ----------- */
   const deleteMut = useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(`${BASE}/api/users/${id}`, {
@@ -93,20 +99,25 @@ export default function AdminUsers() {
 
   if (isLoading) return <Layout>Chargement…</Layout>;
 
+  /* utilitaire : n’envoyer que les champs modifiés */
+  const cleaned = (obj: Record<string, any>) =>
+    Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
+
+  /* ----------- rendu ----------- */
   return (
     <Layout>
       <div className="p-8 space-y-10">
         <h1 className="text-3xl font-bold">Administration : utilisateurs</h1>
 
-        {/* ------- Formulaire création ------- */}
+        {/* ------ Création ------ */}
         <form
           onSubmit={handleSubmit((d) => createMut.mutate(d))}
           className="grid gap-4 md:grid-cols-6 items-end"
         >
           <Input {...register('firstName', { required: true })} placeholder="Prénom" />
-          <Input {...register('lastName', { required: true })} placeholder="Nom" />
-          <Input {...register('email', { required: true })} placeholder="Email" type="email" />
-          <Input {...register('password', { required: true })} placeholder="Mot de passe" type="password" />
+          <Input {...register('lastName',  { required: true })} placeholder="Nom"   />
+          <Input {...register('email',     { required: true })} placeholder="Email" type="email" />
+          <Input {...register('password',  { required: true })} placeholder="Mot de passe" type="password" />
           <select {...register('role')} className="border rounded px-2 py-1">
             <option value="candidate">candidate</option>
             <option value="employer">employer</option>
@@ -115,31 +126,50 @@ export default function AdminUsers() {
           <Button disabled={isSubmitting}>Créer</Button>
         </form>
 
-        {/* ------- Tableau users ------- */}
+        {/* ------ Tableau ------ */}
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Prénom</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Rôle</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
             {users.map((u) => (
               <TableRow key={u._id}>
+                {/* Prénom */}
                 <TableCell>
                   {editId === u._id ? (
                     <Input
-                      defaultValue={`${u.firstName} ${u.lastName}`}
+                      defaultValue={u.firstName}
                       onChange={(e) =>
-                        setEditValue((v) => ({ ...v, fullName: e.target.value }))
+                        setEditValue((v) => ({ ...v, firstName: e.target.value }))
                       }
                     />
                   ) : (
-                    `${u.firstName} ${u.lastName}`
+                    u.firstName
                   )}
                 </TableCell>
+
+                {/* Nom */}
+                <TableCell>
+                  {editId === u._id ? (
+                    <Input
+                      defaultValue={u.lastName}
+                      onChange={(e) =>
+                        setEditValue((v) => ({ ...v, lastName: e.target.value }))
+                      }
+                    />
+                  ) : (
+                    u.lastName
+                  )}
+                </TableCell>
+
+                {/* Email */}
                 <TableCell>
                   {editId === u._id ? (
                     <Input
@@ -152,12 +182,14 @@ export default function AdminUsers() {
                     u.email
                   )}
                 </TableCell>
+
+                {/* Rôle */}
                 <TableCell>
                   {editId === u._id ? (
                     <select
                       defaultValue={u.role}
                       onChange={(e) =>
-                        setEditValue((v) => ({ ...v, role: e.target.value }))
+                        setEditValue((v) => ({ ...v, role: e.target.value as User['role'] }))
                       }
                       className="border rounded px-2 py-1"
                     >
@@ -169,13 +201,15 @@ export default function AdminUsers() {
                     u.role
                   )}
                 </TableCell>
+
+                {/* Actions */}
                 <TableCell className="space-x-2">
                   {editId === u._id ? (
                     <>
                       <Button
                         size="sm"
                         onClick={() =>
-                          updateMut.mutate({ id: u._id, data: editValue })
+                          updateMut.mutate({ id: u._id, data: cleaned(editValue) })
                         }
                         disabled={updateMut.isLoading}
                       >
@@ -184,7 +218,10 @@ export default function AdminUsers() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setEditId(null)}
+                        onClick={() => {
+                          setEditId(null);
+                          setEditValue({});
+                        }}
                       >
                         Annuler
                       </Button>
