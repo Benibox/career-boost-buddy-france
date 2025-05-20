@@ -3,9 +3,9 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = new Schema(
   {
-    firstName:   { type: String, required: true, trim: true },
-    lastName:    { type: String, required: true, trim: true },
-    email:       {
+    firstName: { type: String, required: true, trim: true },
+    lastName:  { type: String, required: true, trim: true },
+    email:     {
       type: String,
       required: true,
       unique: true,
@@ -15,13 +15,17 @@ const userSchema = new Schema(
     },
     passwordHash: { type: String, required: true },
 
-    /* ───── NOUVEAU ───── */
-    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    /* rôles élargis */
+    role: {
+      type: String,
+      enum: ['candidate', 'employer', 'admin'],
+      default: 'candidate',
+    },
   },
   { timestamps: true, versionKey: false },
 );
 
-/* Helpers ------------------------------------------------------- */
+/* helpers -------------------------------------------------------- */
 userSchema.methods.setPassword = async function (pwd) {
   this.passwordHash = await bcrypt.hash(pwd, 12);
 };

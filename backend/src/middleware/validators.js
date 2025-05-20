@@ -1,16 +1,17 @@
 import { body, validationResult } from 'express-validator';
 
-/* Wrapper générique pour retourner les erreurs ------------------- */
+/* wrapper générique --------------------------------------------- */
 export const validateRequest = (rules) => [
   ...rules,
   (req, res, next) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json({ errors: errors.array() });
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() });
     next();
   },
 ];
 
-/* Auth existants -------------------------------------------------- */
+/* auth ----------------------------------------------------------- */
 export const registerRules = [
   body('firstName').notEmpty(),
   body('lastName').notEmpty(),
@@ -22,13 +23,15 @@ export const loginRules = [
   body('password').notEmpty(),
 ];
 
-/* CRUD user ------------------------------------------------------- */
+/* CRUD user ------------------------------------------------------ */
+const roleEnum = ['candidate', 'employer', 'admin'];
+
 export const createUserSchema = [
   body('firstName').notEmpty(),
   body('lastName').notEmpty(),
   body('email').isEmail(),
   body('password').isLength({ min: 6 }),
-  body('role').optional().isIn(['user', 'admin']),
+  body('role').optional().isIn(roleEnum),
 ];
 
 export const updateUserSchema = [
@@ -36,5 +39,5 @@ export const updateUserSchema = [
   body('lastName').optional().notEmpty(),
   body('email').optional().isEmail(),
   body('password').optional().isLength({ min: 6 }),
-  body('role').optional().isIn(['user', 'admin']),
+  body('role').optional().isIn(roleEnum),
 ];

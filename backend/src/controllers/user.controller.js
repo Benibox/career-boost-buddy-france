@@ -22,10 +22,10 @@ export const getUserById = async (req, res, next) => {
   }
 };
 
-/* POST /api/users ------------------------------------------------- */
+/* POST /api/users ------------------------------------------------ */
 export const createUser = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, password, role = 'user' } = req.body;
+    const { firstName, lastName, email, password, role = 'candidate' } = req.body;
 
     if (await User.findOne({ email }))
       return res.status(409).json({ message: 'Email already taken' });
@@ -33,11 +33,18 @@ export const createUser = async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, 12);
     const user = await User.create({ firstName, lastName, email, passwordHash, role });
 
-    res.status(201).json({ id: user._id, firstName, lastName, email, role });
+    res.status(201).json({
+      id: user._id,
+      firstName,
+      lastName,
+      email,
+      role,
+    });
   } catch (err) {
     next(err);
   }
 };
+
 
 /* PUT /api/users/:id --------------------------------------------- */
 export const updateUser = async (req, res, next) => {
