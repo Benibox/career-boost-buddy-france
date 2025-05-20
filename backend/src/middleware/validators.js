@@ -23,6 +23,27 @@ export const loginRules = [
   body('password').notEmpty(),
 ];
 
+const isoDate = (field) =>
+  body(field).isISO8601().toDate().withMessage(`${field} doit être une date ISO`);
+
+export const createExpSchema = [
+  body('title').notEmpty().isLength({ max: 200 }),
+  body('shortDesc').notEmpty().isLength({ max: 500 }),
+  isoDate('startDate'),
+  isoDate('endDate'),
+  body('location').notEmpty().isLength({ max: 200 }),
+];
+
+export const updateExpSchema = [
+  body('title').optional().isLength({ max: 200 }),
+  body('shortDesc').optional().isLength({ max: 500 }),
+  body('longDesc').optional().isLength({ max: 5000 }),
+  isoDate('startDate').optional(),
+  isoDate('endDate').optional(),
+  body('location').optional().isLength({ max: 200 }),
+  body('status').optional().isIn(['draft', 'submitted', 'validated', 'rejected']),
+];
+
 /* CRUD user ------------------------------------------------------ */
 const roleEnum = ['candidate', 'employer', 'admin'];
 

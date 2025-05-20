@@ -56,7 +56,7 @@ export const login = async (req, res) => {
     sameSite: 'strict',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   }).json({
-    id:        user.id,
+    id:        user._id,
     firstName: user.firstName,
     lastName:  user.lastName,
     role:      user.role,

@@ -2,12 +2,17 @@ import jwt from 'jsonwebtoken';
 
 const COOKIE_NAME = 'authToken';
 
-/* Auth obligatoire ------------------------------------------------ */
+/* -----------------------------------------------------------
+ *  requireAuth : JWT obligatoire (cookie httpOnly OU Bearer)
+ * ---------------------------------------------------------- */
 export const requireAuth = (req, res, next) => {
   let token = null;
 
+  /* 1) Authorization: Bearer <jwt> */
   const header = req.headers.authorization;
   if (header?.startsWith('Bearer ')) token = header.split(' ')[1];
+
+  /* 2) Cookie httpOnly */
   if (!token && req.cookies?.[COOKIE_NAME]) token = req.cookies[COOKIE_NAME];
 
   if (!token) return res.sendStatus(401);
@@ -22,8 +27,18 @@ export const requireAuth = (req, res, next) => {
   }
 };
 
-/* Admin seulement ------------------------------------------------- */
-export const requireAdmin = (req, _res, next) => {
+/* -----------------------------------------------------------
+ *  requireAdmin : réservé aux rôles admin
+ * ---------------------------------------------------------- */
+export const requireAdmin = (req, res, next) => {
   if (req.user?.role === 'admin') return next();
-  return _res.sendStatus(403);
+  res.sendStatus(403);
+};
+
+/* -----------------------------------------------------------
+ *  requireEmployer : employer OU admin
+ * ---------------------------------------------------------- */
+export const requireEmployer = (req, res, next) => {
+  if (req.user?.role === 'employer' || req.user?.role === 'admin') return next();
+  res.sendStatus(403);
 };

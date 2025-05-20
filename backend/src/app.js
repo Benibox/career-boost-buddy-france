@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { authRouter }  from './routes/auth.routes.js';
 import userRouter      from './routes/user.routes.js';
+import experienceRouter from './routes/experience.routes.js';
 
 /* ─────────────  LOG HTTP (optionnel) ─────────────
    Si le paquet morgan est présent, on l’utilise.
@@ -52,5 +53,6 @@ app.use((req, _res, next) => {
 /* ───────────────  ROUTES  ─────────────── */
 app.use('/api/auth',  authRouter);
 app.use('/api/users', userRouter);
+app.use('/api', experienceRouter);   
 
 export default app;
