@@ -72,7 +72,7 @@ Career Boost Buddy France est une plateforme full-stack (Node.js + React) permet
 1. **Cloner le dépôt**
 
    ```bash
-   git clone https://github.com/votre-orga/career-boost-buddy-france.git
+   git clone https://github.com/Benibox/career-boost-buddy-france.git
    cd career-boost-buddy-france
    ```
 
