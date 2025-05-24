@@ -19,3 +19,4 @@ dist-ssr
 # Ne pas versionner les credentials
 backend/.env
 frontend/.env
+.env
