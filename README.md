@@ -1,200 +1,258 @@
+# Career Boost Buddy - France
 
-# Career Boost Buddy France
-
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-
-## 📖 Description
-
-**Career Boost Buddy France** est une application web full-stack destinée à aider les utilisateurs à valoriser et valider leurs expériences professionnelles.  
-Elle propose :
-- Un **backend** Node.js / Express connecté à une base MongoDB ;
-- Un **frontend** React + Vite + TypeScript avec React Query, React Hook Form et le design system Shadcn/UI ;
-- Une authentification JWT via cookies HttpOnly, avec rôles **candidate**, **employer** et **admin** ;
-- Gestion des expériences (CRUD) : brouillon, soumission, validation par un employeur, suivi dans le tableau de bord ;
-- Espace **admin** pour gérer les utilisateurs (CRUD) ;
-- Envoi d’emails (confirmation d’inscription, notifications) via SendGrid ;
-- Conteneurisation complète avec Docker Compose.
+**Un outil complet pour gérer votre parcours professionnel,
+avec gestion des utilisateurs, expériences, et validation employeur.**
 
 ---
 
-## 🚀 Fonctionnalités
+## Table des matières
 
-### Authentification & Utilisateurs
-- Inscription / confirmation d’email via token SendGrid  
-- Connexion / déconnexion  
-- Récupération du profil (`GET /api/auth/me`)  
-
-### Expériences
-- Création d’une expérience en **brouillon**  
-- Soumission pour validation (status `submitted`)  
-- Validation / refus (`validated` / `rejected`) par un **employer** ou un **admin**  
-- Édition & suppression autorisées tant que l’expérience n’est pas validée  
-- Partage du lien de validation  
-
-### Administration
-- Interface **Admin** sécurisée (role `admin`)  
-- CRUD complet des utilisateurs (`/api/users`)  
-
-### DevOps
-- Docker Compose : services `mongo`, `backend`, `seed`, `frontend`  
-- Seed initial : création d’un compte admin  
-- Variables d’environnement centralisées via `.env`  
+1. [Description](#description)
+2. [Fonctionnalités](#fonctionnalités)
+3. [Architecture & Technologies](#architecture--technologies)
+4. [Prérequis](#prérequis)
+5. [Installation & Lancement](#installation--lancement)
+6. [Configuration des variables d'environnement](#configuration-des-variables-denvironnement)
+7. [Structure du projet](#structure-du-projet)
+8. [API Endpoints](#api-endpoints)
+9. [Front-end](#front-end)
+10. [E-mail de vérification](#e-mail-de-vérification)
+11. [Tests & Linting](#tests--linting)
+12. [Contributing](#contributing)
+13. [Licence](#licence)
 
 ---
 
-## 🛠️ Stack Technique
+## Description
 
-| Côté        | Technologie                                   |
-| ----------- | --------------------------------------------- |
-| Backend     | Node.js, Express, Mongoose, JWT, SendGrid     |
-| Frontend    | React, Vite, TypeScript, React Query, Tailwind CSS, Shadcn/UI, React Hook Form, Zod |
-| Base de données | MongoDB                                 |
-| Conteneurisation | Docker, Docker Compose                 |
+Career Boost Buddy France est une plateforme full-stack (Node.js + React) permettant :
 
----
-
-## ⚙️ Prérequis
-
-- [Docker](https://docs.docker.com/get-docker/) & Docker Compose  
-- Git  
-- Un compte SendGrid avec une clé API valide  
+* Gestion des utilisateurs (candidats, employeurs, administrateurs)
+* Soumission, modification et validation des **expériences professionnelles**
+* Workflow de validation employeur
+* Vérification par e-mail lors de l'inscription (SendGrid)
+* Tableau de bord utilisateur et interface admin CRUD
 
 ---
 
-## 📝 Installation & configuration
+## Fonctionnalités
+
+* 🔐 Authentification & Autorisation (JWT + HTTPOnly cookies)
+* 📧 Inscription avec e-mail de confirmation (SendGrid)
+* 👤 Management des utilisateurs (CRUD) – **espace admin**
+* 📋 Gestion des expériences (draft, submitted, validated, rejected)
+* 🖥️ Interface utilisateur réactive (React + Tanstack Query)
+* 🐳 Conteneurisation complète (Docker & Docker Compose)
+* ⚙️ Validation des données côté serveur (express-validator, Zod)
+
+---
+
+## Architecture & Technologies
+
+* **Backend**: Node.js, Express, MongoDB, Mongoose
+* **Front-end**: React, Vite, TypeScript, shadcn/ui, Tanstack Query, React Hook Form
+* **Email**: SendGrid (via `@sendgrid/mail`)
+* **Conteneurs**: Docker, Docker Compose
+* **Validation**: `express-validator`, `zod`
+* **Tests**: (à venir) Jest, Supertest
+
+---
+
+## Prérequis
+
+* [Node.js](https://nodejs.org/) v20+
+* [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
+* Un compte SendGrid et une **API Key**
+* Un nom de domaine validé pour l'envoi (SPF, DKIM)
+
+---
+
+## Installation & Lancement
 
 1. **Cloner le dépôt**
+
    ```bash
-   git clone https://github.com/votre-org/career-boost-buddy-france.git
+   git clone https://github.com/votre-orga/career-boost-buddy-france.git
    cd career-boost-buddy-france
-````
-
-2. **Créer un fichier `backend/.env`** à la racine du dossier `backend` :
-
-   ```env
-   # backend/.env
-   NODE_ENV=development
-   PORT=3001
-   MONGODB_URI=mongodb://mongo:27017/benibox
-   JWT_SECRET=change_this
-   SENDGRID_API_KEY=SG.xxxxxxx
-   EMAIL_FROM=no-reply@votre-domaine.fr
-   FRONTEND_URL=http://localhost:5173
    ```
 
-3. **Créer un fichier `frontend/.env`** :
+2. **Créer un fichier `.env` à la racine**
+   Voir [Configuration des variables d'environnement](#configuration-des-variables-denvironnement).
 
-   ```env
-   # frontend/.env
-   VITE_BACKEND_URL=http://localhost:3001
-   ```
-
-4. **Démarrer les conteneurs**
+3. **Démarrer les conteneurs**
 
    ```bash
    docker compose up --build
    ```
 
-   * Le service **seed** va créer un compte admin par défaut (email et mot de passe configurés via `ADMIN_EMAIL` / `ADMIN_PASSWORD`).
+4. **Donner du temps** pour MongoDB, puis lancer le seed si nécessaire :
 
-5. **Accéder à l’application**
+   ```bash
+   docker compose run --rm seed
+   ```
 
-   * Frontend : [http://localhost:5173](http://localhost:5173)
-   * API : [http://localhost:3001/api](http://localhost:3001/api)
+5. **Accéder à**
+
+   * Frontend : [http://localhost:5173](http://localhost:5173)
+   * Backend API : [http://localhost:3001](http://localhost:3001)
 
 ---
 
-## 📂 Structure du projet
+## Configuration des variables d'environnement
+
+Créez un fichier `backend/.env` :
+
+```dotenv
+# MongoDB
+MONGODB_URI=mongodb://mongo:27017/benibox
+
+# JWT
+JWT_SECRET=votre_secret_jwt
+
+# SendGrid
+SENDGRID_API_KEY=votre_clef_sendgrid
+EMAIL_FROM=postmaster@votredomaine.fr
+
+# URL Front
+FRONTEND_URL=http://localhost:5173
+```
+
+Créez un fichier `frontend/.env` :
+
+```dotenv
+VITE_BACKEND_URL=http://localhost:3001
+```
+
+> **Ne commitez jamais** vos secrets !
+
+---
+
+## Structure du projet
 
 ```
-.
-├── backend
-│   ├── src
-│   │   ├── controllers
-│   │   ├── middleware
-│   │   ├── models
-│   │   ├── routes
-│   │   ├── utils
+career-boost-buddy-france/
+├── backend/
+│   ├── src/
 │   │   ├── app.js
-│   │   └── index.js
-│   ├── .env
+│   │   ├── index.js
+│   │   ├── models/
+│   │   │   ├── user.model.js
+│   │   │   └── experience.model.js
+│   │   ├── controllers/
+│   │   │   ├── auth.controller.js
+│   │   │   ├── user.controller.js
+│   │   │   └── experience.controller.js
+│   │   ├── routes/
+│   │   │   ├── auth.routes.js
+│   │   │   ├── user.routes.js
+│   │   │   └── experience.routes.js
+│   │   └── utils/
+│   │       └── mailer.js
 │   ├── Dockerfile
 │   └── package.json
-├── frontend
-│   ├── src
-│   │   ├── pages
-│   │   ├── components
-│   │   ├── contexts
-│   │   ├── routes
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── .env
-│   ├── tailwind.config.js
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   └── contexts/
+│   ├── vite.config.ts
 │   └── package.json
-├── docker-compose.yml
-└── README.md
+└── docker-compose.yml
 ```
 
 ---
 
-## 📋 Scripts disponibles
+## API Endpoints
 
-### Backend
+### Auth
 
-```bash
-cd backend
-npm install
-npm run dev       # démarre avec Nodemon
-npm run seed      # exécute le script de seed (création admin)
-```
+| Méthode | Route                      | Description                |
+| :------ | :------------------------- | :------------------------- |
+| POST    | `/api/auth/register`       | Inscription + envoi e-mail |
+| GET     | `/api/auth/confirm/:token` | Confirmation e-mail        |
+| POST    | `/api/auth/login`          | Connexion                  |
+| POST    | `/api/auth/logout`         | Déconnexion                |
+| GET     | `/api/auth/me`             | Récupérer session          |
 
-### Frontend
+### Users
 
-```bash
-cd frontend
-npm install
-npm run dev       # serveur Vite en mode développement
-npm run build     # build de production
-npm run preview   # prévisualisation du build
-```
+| Méthode | Route            | Auth | Admin? | Description          |
+| :------ | :--------------- | :--: | :----: | :------------------- |
+| GET     | `/api/users`     |   ✅  |    ✅   | Liste tous les users |
+| POST    | `/api/users`     |   ✅  |    ✅   | Créer un user        |
+| GET     | `/api/users/:id` |   ✅  |        | Détail user          |
+| PUT     | `/api/users/:id` |   ✅  |        | Modifier user        |
+| DELETE  | `/api/users/:id` |   ✅  |    ✅   | Supprimer user       |
 
-### Docker
+### Experiences
 
-```bash
-docker compose up --build      # build et lance tous les services
-docker compose down            # arrête et supprime les conteneurs
-docker compose run --rm seed   # (re)lance manuellement le seed
-```
-
----
-
-## 🔑 Variables d’environnement
-
-| Variable           | Description                                                 |
-| ------------------ | ----------------------------------------------------------- |
-| `MONGODB_URI`      | URI de connexion MongoDB                                    |
-| `JWT_SECRET`       | Clé secrète pour signer les JWT                             |
-| `PORT`             | Port d’écoute du backend                                    |
-| `SENDGRID_API_KEY` | Clé API SendGrid pour envoi d’emails                        |
-| `EMAIL_FROM`       | Adresse d’expéditeur utilisée par SendGrid                  |
-| `FRONTEND_URL`     | URL du frontend (pour liens de confirmation / redirections) |
-| `VITE_BACKEND_URL` | URL de l’API exposée pour le frontend                       |
+| Méthode | Route                           | Auth | Description                 |
+| :------ | :------------------------------ | :--: | :-------------------------- |
+| GET     | `/api/users/me/experiences`     |   ✅  | Lister mes expériences      |
+| POST    | `/api/users/me/experiences`     |   ✅  | Créer (draft)               |
+| GET     | `/api/experiences/:id`          |   ✅  | Détail (owner/admin)        |
+| PUT     | `/api/experiences/:id`          |   ✅  | Modifier (draft/submitted)  |
+| DELETE  | `/api/experiences/:id`          |   ✅  | Supprimer (owner/admin)     |
+| POST    | `/api/experiences/:id/validate` |   ✅  | Validation (employer/admin) |
 
 ---
 
-## 🤝 Contribuer
+## Front-end
 
-1. Forkez ce dépôt
-2. Créez une branche feature (`git checkout -b feature/ma-feature`)
-3. Commitez vos changements (`git commit -m 'Add feature X'`)
-4. Pushez la branche (`git push origin feature/ma-feature`)
+* **Pages clés** :
+
+  * `/login`, `/creer` (signup)
+  * `/dashboard` (liste & stats)
+  * `/experiences/new` (ajout)
+  * `/experiences/:id/edit` (modification)
+  * `/profil` (profil utilisateur)
+  * `/admin/users` (CRUD utilisateurs)
+
+* **State & Fetching** :
+
+  * React Context pour l’authentification
+  * Tanstack Query pour le caching & les mutations
+  * React Hook Form + Zod pour la validation locale
+
+---
+
+## E-mail de vérification
+
+Le service `sendMail(template, to, vars)` fournit un wrapper flexible :
+
+```js
+// utils/mailer.js
+export async function sendMail(name, recipient, variables) { /* … */ }
+```
+
+* Ajoutez de nouveaux templates dans `renderTemplate()`
+* Réutilisez la fonction pour les notifications (reset password, etc)
+
+---
+
+## Tests & Linting
+
+*(À implémenter)*
+
+* **Tests unitaires** : Jest
+* **Tests d’intégration** : Supertest
+* **Lint** : ESLint + Prettier
+
+---
+
+## Contributing
+
+1. Forkez le projet
+2. Créez une branche (`git checkout -b feat/ma-fonction`)
+3. Committez vos changements (`git commit -m 'feat: ajout…'`)
+4. Pushez (`git push origin feat/ma-fonction`)
 5. Ouvrez une Pull Request
 
 ---
 
-## 📄 License
+## Licence
 
-Ce projet est sous licence **MIT**. Voir `LICENSE` pour plus de détails.
+Ce projet est sous licence [MIT](LICENSE).
 
 ```
 ```
