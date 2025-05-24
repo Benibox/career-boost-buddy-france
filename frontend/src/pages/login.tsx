@@ -1,13 +1,13 @@
-import { useState, useContext } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Mail, Lock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Mail, Lock } from 'lucide-react';
 
-import Layout from "@/components/layout/Layout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import Layout from '@/components/layout/Layout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormField,
@@ -15,32 +15,44 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { AuthContext } from "@/contexts/AuthContext";
+} from '@/components/ui/form';
+import { AuthContext } from '@/contexts/AuthContext';
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Veuillez entrer une adresse email valide" }),
-  password: z.string().min(8, { message: "Le mot de passe doit contenir au moins 8 caractères" }),
+  email: z.string().email({ message: 'Veuillez entrer une adresse email valide' }),
+  password: z.string().min(8, { message: 'Le mot de passe doit contenir au moins 8 caractères' }),
 });
 
-const Login = () => {
+export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useContext(AuthContext);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { email: "", password: "" },
-  });
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { email: '', password: '' },
+  });
+
+  // si on arrive avec ?confirmed=1, on affiche un message de succès
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('confirmed') === '1') {
+      setConfirmed(true);
+      // on peut aussi nettoyer l'URL
+      navigate('/login', { replace: true, state: {} });
+    }
+  }, []);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setSubmitting(true);
     setError(null);
     try {
       await login(values.email, values.password);
-      navigate("/welcome");
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -59,6 +71,11 @@ const Login = () => {
         </p>
 
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          {confirmed && (
+            <p className="mb-4 text-center text-green-600">
+              Votre adresse a bien été confirmée ! Vous pouvez maintenant vous connecter.
+            </p>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -98,7 +115,7 @@ const Login = () => {
               {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
               <Button type="submit" className="w-full bg-highlight hover:bg-darkpurple" disabled={submitting}>
-                {submitting ? "Connexion…" : "Se connecter"}
+                {submitting ? 'Connexion…' : 'Se connecter'}
               </Button>
             </form>
           </Form>
@@ -106,6 +123,4 @@ const Login = () => {
       </div>
     </Layout>
   );
-};
-
-export default Login;
+}

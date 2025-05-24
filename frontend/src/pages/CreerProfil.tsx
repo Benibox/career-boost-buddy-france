@@ -23,7 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useAuth } from '@/contexts/AuthContext';
 
 const schema = z.object({
   role: z.enum(['Employeur', 'Employé'], { required_error: 'Sélectionnez votre rôle' }),
@@ -37,10 +36,9 @@ const schema = z.object({
 const BASE = import.meta.env.VITE_BACKEND_URL || '';
 
 export default function CreerProfil() {
-  const navigate           = useNavigate();
-  const { login }          = useAuth();
-  const [error, setError]  = useState<string | null>(null);
-  const [saving, setSaving]= useState(false);
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -54,35 +52,27 @@ export default function CreerProfil() {
     },
   });
 
-  /* ---------------- Soumission ---------------- */
   const onSubmit = async (v: z.infer<typeof schema>) => {
     setSaving(true);
     setError(null);
-
     try {
-      /* 1️⃣  Inscription -------------------------------- */
       const payload = {
         firstName: v.prenom,
-        lastName : v.nom,
-        email    : v.email,
-        password : v.password,
+        lastName: v.nom,
+        email: v.email,
+        password: v.password,
       };
       const res = await fetch(`${BASE}/api/auth/register`, {
-        method : 'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body   : JSON.stringify(payload),
+        body: JSON.stringify(payload),
       });
-      console.debug('POST /register →', res.status);
       if (!res.ok) {
         const { message } = await res.json().catch(() => ({ message: 'Erreur' }));
         throw new Error(message || 'Inscription impossible');
       }
-
-      /* 2️⃣  Connexion automatique ---------------------- */
-      await login(v.email, v.password);
-
-      /* 3️⃣  Redirection onboarding --------------------- */
-      navigate('/welcome');
+      // Au lieu de login automatique, on redirige sur une page d’instruction
+      navigate('/confirm-sent');
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -90,7 +80,6 @@ export default function CreerProfil() {
     }
   };
 
-  /* -------------------- UI -------------------- */
   return (
     <Layout>
       <div className="py-12 container mx-auto px-4">
@@ -125,6 +114,7 @@ export default function CreerProfil() {
                   </FormItem>
                 )}
               />
+
               {/* Prénom / Nom */}
               <div className="grid md:grid-cols-2 gap-4">
                 {['prenom', 'nom'].map((field) => (
@@ -147,7 +137,8 @@ export default function CreerProfil() {
                   />
                 ))}
               </div>
-              {/* Date naissance */}
+
+              {/* Date de naissance */}
               <FormField
                 control={form.control}
                 name="dateNaissance"
@@ -187,6 +178,7 @@ export default function CreerProfil() {
                   </FormItem>
                 )}
               />
+
               {/* Email */}
               <FormField
                 control={form.control}
@@ -204,7 +196,8 @@ export default function CreerProfil() {
                   </FormItem>
                 )}
               />
-              {/* Password */}
+
+              {/* Mot de passe */}
               <FormField
                 control={form.control}
                 name="password"

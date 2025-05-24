@@ -10,6 +10,7 @@ import Index          from '@/pages/Index';
 import Parrainage     from '@/pages/Parrainage';
 import QuiSommesNous  from '@/pages/QuiSommesNous';
 import CreerProfil    from '@/pages/CreerProfil';
+import ConfirmSent    from '@/pages/ConfirmSent';
 import Login          from '@/pages/login';
 
 /* onboarding */
@@ -25,9 +26,9 @@ import Profil         from '@/pages/Profil';
 import AdminUsers     from '@/pages/AdminUsers';
 
 /* context & guards */
-import { AuthProvider }       from '@/contexts/AuthContext';
-import PrivateRoute           from '@/contexts/PrivateRoute';
-import AdminRoute             from '@/components/route/AdminRoute';
+import { AuthProvider } from '@/contexts/AuthContext';
+import PrivateRoute     from '@/contexts/PrivateRoute';
+import AdminRoute       from '@/components/route/AdminRoute';
 
 const queryClient = new QueryClient();
 
@@ -38,7 +39,6 @@ export default function App() {
         <Toaster />
         <Sonner />
 
-        {/* Router en premier, puis AuthProvider  */}
         <BrowserRouter>
           <AuthProvider>
             <Routes>
@@ -47,56 +47,29 @@ export default function App() {
               <Route path="/parrainage"      element={<Parrainage />} />
               <Route path="/qui-sommes-nous" element={<QuiSommesNous />} />
               <Route path="/creer"           element={<CreerProfil />} />
+              <Route path="/confirm-sent"    element={<ConfirmSent />} />
               <Route path="/login"           element={<Login />} />
 
               {/* ─────────── Onboarding ───────── */}
               <Route path="/welcome" element={<Onboarding />} />
 
               {/* ─────────── Utilisateur ───────── */}
-              <Route
-                path="/dashboard"
-                element={
-                  <PrivateRoute>
-                    <Dashboard />
-                  </PrivateRoute>
-                }
+              <Route path="/dashboard"
+                element={<PrivateRoute><Dashboard /></PrivateRoute>}
               />
-
-              <Route
-                path="/experiences/new"
-                element={
-                  <PrivateRoute>
-                    <AddExperience />
-                  </PrivateRoute>
-                }
+              <Route path="/experiences/new"
+                element={<PrivateRoute><AddExperience /></PrivateRoute>}
               />
-
-              <Route
-                path="/experiences/:id/edit"
-                element={
-                  <PrivateRoute>
-                    <EditExperience />
-                  </PrivateRoute>
-                }
+              <Route path="/experiences/:id/edit"
+                element={<PrivateRoute><EditExperience /></PrivateRoute>}
               />
-
-              <Route
-                path="/profil"
-                element={
-                  <PrivateRoute>
-                    <Profil />
-                  </PrivateRoute>
-                }
+              <Route path="/profil"
+                element={<PrivateRoute><Profil /></PrivateRoute>}
               />
 
               {/* ───────────── Admin ───────────── */}
-              <Route
-                path="/admin/users"
-                element={
-                  <AdminRoute>
-                    <AdminUsers />
-                  </AdminRoute>
-                }
+              <Route path="/admin/users"
+                element={<AdminRoute><AdminUsers /></AdminRoute>}
               />
 
               {/* ───────────── 404 ────────────── */}

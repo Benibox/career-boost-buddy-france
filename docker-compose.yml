@@ -1,47 +1,77 @@
+# docker-compose.yml
+version: '3.8'
+
 services:
   mongo:
     image: mongo:6
-    ports: ["27017:27017"]
-    volumes: [mongo-data:/data/db]
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
 
   backend:
     build: ./backend
+    # on récupère les vars du .env
     environment:
-      NODE_ENV: development
-      MONGODB_URI: mongodb://mongo:27017/benibox   # ← URI unique
-      JWT_SECRET: change_this
-      PORT: 3001
+      - NODE_ENV=development
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=${PORT}
+      # Si vous avez besoin de SendGrid :
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - FRONTEND_URL=${FRONTEND_URL}
+    env_file:
+      - .env
     volumes:
       - ./backend:/app
       - /app/node_modules
-    ports: ["3001:3001"]
-    depends_on: [mongo]
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
     command: npm run dev
 
   seed:
     build: ./backend
-    command: npm run seed
+    env_file:
+      - .env
     environment:
-      MONGODB_URI: mongodb://mongo:27017/benibox
-      ADMIN_EMAIL: admin@demo.com
-      ADMIN_PASSWORD: Admin123!
-    depends_on: [mongo]
+      # seule la partie seed
+      - MONGODB_URI=${MONGODB_URI}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     volumes:
       - ./backend:/app
       - /app/node_modules
+    depends_on:
+      - mongo
+    command: npm run seed
 
   frontend:
     build:
       context: ./frontend
       target: build
+    env_file:
+      - .env
     environment:
-      VITE_BACKEND_URL: http://localhost:3001
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    ports: ["5173:5173"]
-    command: ["npm","run","dev","--","--host","0.0.0.0","--port","5173"]
-    depends_on: [backend]
+    ports:
+      - "5173:5173"
+    command:
+      - npm
+      - run
+      - dev
+      - --
+      - --host
+      - 0.0.0.0
+      - --port
+      - "5173"
+    depends_on:
+      - backend
 
 volumes:
   mongo-data:
