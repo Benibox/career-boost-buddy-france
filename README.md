@@ -1,4 +1,4 @@
-````markdown
+
 # Career Boost Buddy France
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
